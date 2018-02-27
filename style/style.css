@@ -10,8 +10,6 @@
 .table_wrapper
 {
     border: 1px solid red;
-    width: 800px;
-    height: 400px;
     overflow: scroll;
 	margin: auto;
 }
