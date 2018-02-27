@@ -1,6 +1,6 @@
 .center {
-	width: 100%;
 	text-align: center;
+	width: 100%;
 }
 
 .table_center {
@@ -10,6 +10,7 @@
 .table_wrapper
 {
     border: 1px solid red;
-    overflow: scroll;
 	margin: auto;
+	display: inline-block;
+	overflow: hidden;
 }
