@@ -12,6 +12,6 @@
     border: 1px solid red;
     width: 800px;
     height: 400px;
-    overflow: hidden;
+    overflow: scroll;
 	margin: auto;
 }
