@@ -1,13 +1,17 @@
-.green { 
-	background: lightgreen !important; 
-}
-
 .center {
 	width: 100%;
 	text-align: center;
-	margin-bottom: 30px;
 }
 
 .table_center {
+	margin: auto;
+}
+
+.table_wrapper
+{
+    border: 1px solid red;
+    width: 800px;
+    height: 400px;
+    overflow: hidden;
 	margin: auto;
 }
