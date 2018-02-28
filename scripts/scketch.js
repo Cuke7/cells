@@ -1,16 +1,32 @@
 
 let cell_dim = 24;
-let board_size="15x30"; let b_height=25; let b_width=30;
+let board_size="15x30"; let b_height=15; let b_width=30;
 let b = jsboard.board({attach:"game", size:board_size});
 let table=document.getElementById("game");
 let zoomed=false;
 let init_pos=[table.getBoundingClientRect().x,table.getBoundingClientRect().x];
 
-b.cell("each").style({width:cell_dim.toString()+"px", height:cell_dim.toString()+"px", background:"url('images/basic_tile.png') no-repeat",backgroundSize:"100% 100%"});
+b.cell("each").style({width:cell_dim.toString()+"px", height:cell_dim.toString()+"px", background:"url('images/basic_tile2.png') no-repeat",backgroundSize:"100% 100%"});
 
-var w_knight = jsboard.piece({text:"WK", textIndent:"-9999px", background:"url('images/r_wizard.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
-b.cell([0,0]).place(w_knight.clone());
+let r_wizard = jsboard.piece({text:"RW", textIndent:"-9999px", background:"url('images/r_wizard.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
+let b_wizard = jsboard.piece({text:"BW", textIndent:"-9999px", background:"url('images/b_wizard.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
+let r_barb = jsboard.piece({text:"RB", textIndent:"-9999px", background:"url('images/r_barb.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
+let b_barb = jsboard.piece({text:"BB", textIndent:"-9999px", background:"url('images/b_barb.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
 
+let r_team=[
+	r_wizard.clone(),
+	r_barb.clone()
+];
+
+let b_team=[
+	b_wizard.clone(),
+	b_barb.clone()
+];
+
+b.cell([0,0]).place(r_team[0]);
+b.cell([1,0]).place(r_team[1]);
+b.cell([0,29]).place(b_team[0]);
+b.cell([1,29]).place(b_team[1]);
 
 
 

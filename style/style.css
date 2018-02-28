@@ -10,7 +10,7 @@
 
 .table_wrapper
 {
-    border: 1px solid red;
+    border: 3px solid black;
 	margin: auto;
 	display: inline-block;
 	overflow: hidden;
