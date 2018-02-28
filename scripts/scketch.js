@@ -6,7 +6,7 @@ let table=document.getElementById("game");
 let zoomed=false;
 let init_pos=[table.getBoundingClientRect().x,table.getBoundingClientRect().x];
 
-b.cell("each").style({width:cell_dim.toString()+"px", height:cell_dim.toString()+"px", background:"url('images/basic_tile2.png') no-repeat",backgroundSize:"100% 100%"});
+b.cell("each").style({width:cell_dim.toString()+"px", height:cell_dim.toString()+"px", background:"url('images/basic_tile.png') no-repeat",backgroundSize:"100% 100%"});
 
 let r_wizard = jsboard.piece({text:"RW", textIndent:"-9999px", background:"url('images/r_wizard.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
 let b_wizard = jsboard.piece({text:"BW", textIndent:"-9999px", background:"url('images/b_wizard.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
@@ -29,9 +29,81 @@ b.cell([0,29]).place(b_team[0]);
 b.cell([1,29]).place(b_team[1]);
 
 
+// variables for piece to move and its locs
+var bindMoveLocs, bindMovePiece;
+
+for (var i=0; i<b_team.length; i++){ 
+	b_team[i].addEventListener("click", function() { showMoves(this); });
+}
+for (var i=0; i<r_team.length; i++){ 
+	r_team[i].addEventListener("click", function() { showMoves(this); });
+}
+function showMoves(piece) {
+
+    resetBoard();
+	var thisPiece = b.cell(piece.parentNode).get();
+    var newLocs = [];
+    var loc;
+    loc = b.cell(piece.parentNode).where();
+
+    // movement for wizards
+    if (thisPiece=="RW"||thisPiece=="BW") {
+        newLocs.push(
+            [loc[0]-1,loc[1]],   [loc[0]+1,loc[1]],
+            [loc[0],loc[1]-1],   [loc[0],loc[1]+1],
+            [loc[0]-1,loc[1]-1], [loc[0]-1,loc[1]+1],
+            [loc[0]+1,loc[1]-1], [loc[0]+1,loc[1]+1],
+			[loc[0]-1,loc[1]-2], [loc[0]-1,loc[1]+2],
+            [loc[0]-2,loc[1]-1], [loc[0]-2,loc[1]+1],
+            [loc[0]+1,loc[1]-2], [loc[0]+1,loc[1]+2],
+            [loc[0]+2,loc[1]-1], [loc[0]+2,loc[1]+1]
+        );
+	}
+	// remove illegal moves by checking 
+    // content of b.cell().get()
+    (function removeIllegalMoves(arr) {
+        var fixedLocs = [];
+        for (var i=0; i<arr.length; i++) 
+            if (b.cell(arr[i]).get()==null)
+                fixedLocs.push(arr[i]); 
+        newLocs = fixedLocs;
+    })(newLocs); 
+
+    // bind green spaces to movement of piece
+    bindMoveLocs = newLocs.slice();
+    bindMovePiece = piece; 
+    bindMoveEvents(bindMoveLocs);
+
+}
 
 
+// bind move event to new piece locations
+function bindMoveEvents(locs) {
+    for (var i=0; i<locs.length; i++) {
+        b.cell(locs[i]).DOM().classList.add("green");
+        b.cell(locs[i]).on("click", movePiece);  
+    }
+}
 
+// actually move the piece
+function movePiece() {
+    var userClick = b.cell(this).where();
+    if (bindMoveLocs.indexOf(userClick)) {
+        b.cell(userClick).place(bindMovePiece);
+        resetBoard();
+    }
+}
+
+
+// remove previous green spaces and event listeners
+function resetBoard() {
+    for (var r=0; r<b.rows(); r++) {
+        for (var c=0; c<b.cols(); c++) {
+            b.cell([r,c]).DOM().classList.remove("green");
+            b.cell([r,c]).removeOn("click", movePiece);
+        }
+    }
+}
 
 
 
