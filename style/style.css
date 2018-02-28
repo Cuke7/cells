@@ -5,6 +5,7 @@
 
 .table_center {
 	margin: auto;
+	position: relative;
 }
 
 .table_wrapper
