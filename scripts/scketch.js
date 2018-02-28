@@ -13,6 +13,11 @@ let b_wizard = jsboard.piece({text:"BW", textIndent:"-9999px", background:"url('
 let r_barb = jsboard.piece({text:"RB", textIndent:"-9999px", background:"url('images/r_barb.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
 let b_barb = jsboard.piece({text:"BB", textIndent:"-9999px", background:"url('images/b_barb.png') no-repeat",backgroundSize:"100% 100%", width:"24px", height:"24px", margin:"0 auto"});
 
+r_wizard.pm=3;
+b_wizard.pm=3;
+r_barb.pm=5;
+b_barb.pm=5;
+
 let r_team=[
 	r_wizard.clone(),
 	r_barb.clone()
@@ -23,7 +28,7 @@ let b_team=[
 	b_barb.clone()
 ];
 
-b.cell([0,0]).place(r_team[0]);
+b.cell([8,8]).place(r_team[0]);
 b.cell([1,0]).place(r_team[1]);
 b.cell([0,29]).place(b_team[0]);
 b.cell([1,29]).place(b_team[1]);
@@ -45,35 +50,32 @@ function showMoves(piece) {
     var newLocs = [];
     var loc;
     loc = b.cell(piece.parentNode).where();
-
     // movement for wizards
     if (thisPiece=="RW"||thisPiece=="BW") {
-        newLocs.push(
-            [loc[0]-1,loc[1]],   [loc[0]+1,loc[1]],
-            [loc[0],loc[1]-1],   [loc[0],loc[1]+1],
-            [loc[0]-1,loc[1]-1], [loc[0]-1,loc[1]+1],
-            [loc[0]+1,loc[1]-1], [loc[0]+1,loc[1]+1],
-			[loc[0]-1,loc[1]-2], [loc[0]-1,loc[1]+2],
-            [loc[0]-2,loc[1]-1], [loc[0]-2,loc[1]+1],
-            [loc[0]+1,loc[1]-2], [loc[0]+1,loc[1]+2],
-            [loc[0]+2,loc[1]-1], [loc[0]+2,loc[1]+1]
-        );
+		newLocs.push(loc);
+		let stop=newLocs.length;
+       // for (let i=0; i<r_wizard.pm; i++){
+			for (let j=0; j<stop; j++){
+				newLocs.push(
+				[loc[0]+1,loc[1]],
+				[loc[0]-1,loc[1]],
+				[loc[0],loc[1]+1],
+				[loc[0],loc[1]-1]
+				);
+				//console.log(newLocs);
+			}
+		//} 
 	}
 	// remove illegal moves by checking 
     // content of b.cell().get()
-    (function removeIllegalMoves(arr) {
-        var fixedLocs = [];
-        for (var i=0; i<arr.length; i++) 
-            if (b.cell(arr[i]).get()==null)
-                fixedLocs.push(arr[i]); 
-        newLocs = fixedLocs;
-    })(newLocs); 
-
+	removeIllegalMoves(newLocs);
+	console.log(newLocs);
     // bind green spaces to movement of piece
     bindMoveLocs = newLocs.slice();
+	console.log(bindMoveLocs);
     bindMovePiece = piece; 
     bindMoveEvents(bindMoveLocs);
-
+	
 }
 
 
@@ -81,6 +83,7 @@ function showMoves(piece) {
 function bindMoveEvents(locs) {
     for (var i=0; i<locs.length; i++) {
         b.cell(locs[i]).DOM().classList.add("green");
+		console.log(locs[i]);
         b.cell(locs[i]).on("click", movePiece);  
     }
 }
@@ -105,6 +108,13 @@ function resetBoard() {
     }
 }
 
+function removeIllegalMoves(arr) {
+        var fixedLocs = [];
+        for (var i=0; i<arr.length; i++) 
+            if (b.cell(arr[i]).get()==null)
+                fixedLocs.push(arr[i]); 
+        newLocs = fixedLocs;
+}
 
 
 
