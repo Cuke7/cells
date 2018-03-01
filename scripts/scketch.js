@@ -19,29 +19,26 @@ let b_barb = jsboard.piece({text:"BB", textIndent:"-9999px", background:"url('im
 
 
 let r_team=[
-	r_wizard.clone(),
-	r_barb.clone()
+	r_wizard.clone(wizard), // Add the wizard properties to the piece
+	r_barb.clone(barb)
 ];
 
 let b_team=[
-	b_wizard.clone(),
-	b_barb.clone()
+	b_wizard.clone(wizard),
+	b_barb.clone(barb)
 ];
 
 b.cell([8,8]).place(r_team[0]);
 b.cell([8,9]).place(r_team[1]);
-b.cell([0,29]).place(b_team[0]);
-b.cell([1,29]).place(b_team[1]);
+b.cell([9,16]).place(b_team[0]);
+b.cell([10,14]).place(b_team[1]);
 
-
-r_team[0].pm=3;
-r_team[1].pm=5;
 
 // variables for piece to move and its locs
-var bindMoveLocs, bindMovePiece;
+var bindMoveLocs, bindMovePiece, bindMoveCell;
 
 for (var i=0; i<b_team.length; i++){ 
-	b_team[i].addEventListener("click", function() { showMoves(this); });
+	b_team[i].addEventListener("click", function() { showVision(this); });
 }
 for (var i=0; i<r_team.length; i++){ 
 	r_team[i].addEventListener("click", function() { showMoves(this); });
@@ -49,12 +46,10 @@ for (var i=0; i<r_team.length; i++){
 function showMoves(piece) {
 
     resetBoard();
-	var thisPiece = b.cell(piece.parentNode).get();
     var newLocs = [];
-	var tempLocs = [];
-	var finalLocs = [];
     var loc;
     loc = b.cell(piece.parentNode).where();
+	bindMoveCell= b.cell(piece.parentNode);
 	newLocs.push(loc);
 		
 	for(let j=0; j<piece.pm; j++){
@@ -86,6 +81,14 @@ function bindMoveEvents(locs) {
     }
 }
 
+// bind vision event to new piece locations
+function bindVisionEvents(locs) {
+    for (var i=0; i<locs.length; i++) {
+        b.cell(locs[i]).DOM().classList.add("blue");
+    }
+}
+
+
 // actually move the piece
 function movePiece() {
     var userClick = b.cell(this).where();
@@ -101,6 +104,7 @@ function resetBoard() {
     for (var r=0; r<b.rows(); r++) {
         for (var c=0; c<b.cols(); c++) {
             b.cell([r,c]).DOM().classList.remove("green");
+			b.cell([r,c]).DOM().classList.remove("blue");
             b.cell([r,c]).removeOn("click", movePiece);
         }
     }
@@ -109,7 +113,17 @@ function resetBoard() {
 function removeIllegalMoves(arr) {
         var fixedLocs = [];
         for (var i=0; i<arr.length; i++) 
-            if (b.cell(arr[i]).get()==null && b.cell(arr[i]).get()!= "RW"){
+            if (b.cell(arr[i]).get()==null && b.cell(arr[i]).get()!=bindMoveCell.get()){
+                fixedLocs.push(arr[i]); 
+			}
+        newLocs = fixedLocs;
+		return newLocs;
+}
+
+function getObstaclesLocs(arr) {
+        var fixedLocs = [];
+        for (var i=0; i<arr.length; i++) 
+            if (b.cell(arr[i]).get()!=null && b.cell(arr[i]).get()!=bindMoveCell.get() && b.cell(arr[i]).get()!="OOB"){
                 fixedLocs.push(arr[i]); 
 			}
         newLocs = fixedLocs;
@@ -117,7 +131,47 @@ function removeIllegalMoves(arr) {
 }
 
 
+function showVision(piece){
+	resetBoard();
+    var newLocs = [];
+	var obsLocs = [];
+	var visionLocs = [];
+    var loc;
+    loc = b.cell(piece.parentNode).where();
+	bindMoveCell= b.cell(piece.parentNode);
+	newLocs.push(loc);
+		
+	for(let j=-7; j<7; j++){
+		for(let k=-7;k<7; k++){
+			if(abs(j)+abs(k)<7){
+				newLocs.push([loc[0]+j,loc[1]+k]);
+			}
+		}
+		
+	}
+	obsLocs=getObstaclesLocs(newLocs);
+	newLocs=removeIllegalMoves(newLocs);
+	for (let i=0; i<obsLocs.length; i++){
+		let x1=bindMoveCell.where()[1];
+		let y1=bindMoveCell.where()[0];
+		let x0=obsLocs[i][1];
+		let y0=obsLocs[i][0];
+		for (let j=0; j<newLocs.length; j++){
+			let x2=newLocs[j][1];
+			let y2=newLocs[j][0];
+			dist=abs((y2-y1)*x0-(x2-x1)*y0+x2*y1-y2*x1)/Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+			if(dist>1)visionLocs.push(newLocs[j]);
+		}
+	}
+    bindMovePiece = piece;
+	console.log(visionLocs);
+    bindVisionEvents(visionLocs);
+}
 
+function abs(number){
+	if(number<0)return -number;
+	return number;
+}
 
 /* let movedx=X-e.clientX;
 let movedy=X-e.clientY;

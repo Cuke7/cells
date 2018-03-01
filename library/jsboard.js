@@ -266,10 +266,13 @@ window.jsboard = (function(){
         var node = node;
 
         var methods = {
-            clone: function() {
+            clone: function(props) {
                 var nn = node.cloneNode(true);
                 var ra = Math.floor((Math.random() * 3000) + 1);
                 nn.className = "pieceID_"+ra;
+				for (var prop in props) {
+                    nn[prop] = props[prop];
+                }
                 return nn;
             },
             style: function(props) {
