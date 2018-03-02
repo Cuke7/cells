@@ -5,21 +5,42 @@
 	background: lightblue !important; 
 }
 
+.side_menu{
+	border: 3px solid black;
+	margin: 20px;
+	width: 15%;
+	vertical-align: top;
+	display: table-cell;
+	text-align: left;
+}
+
+.console{
+	border: 3px solid black;
+	margin: auto;
+	display: table-cell;
+	width: 15%;
+	background-color:#000000;
+	vertical-align: bottom;
+	text-align: left;
+}
 
 .center {
 	text-align: center;
 	width: 100%;
+	vertical-align: middle;
+	display: table;
 }
-
-.table_center {
-	margin: auto;
-	position: relative;
-}
-
-.table_wrapper
-{
+.table_wrapper {
     border: 3px solid black;
-	margin: auto;
 	display: inline-block;
 	overflow: hidden;
+}
+
+.btn {
+	background:none;
+	border: none;
+}
+
+.log {
+	color: white;
 }

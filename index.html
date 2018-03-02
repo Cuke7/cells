@@ -5,15 +5,22 @@
 		<title>Test</title>
 	</head>
 	<body bgcolor="#404040">
-		<div class="center" class="scroll_div">
-			<h1> Welcome !</h1>
+		<div class="center">
+			<div id="s_menu" class="side_menu">
+				<button class="btn" onclick="showsight()"><img src="images/spell.png" height="32" width="32"></img></button>
+			</div>
+				
 			<div id="table_wrapper" class="table_wrapper">
-				<table id="game" class="table_center"></table>
+				<table id="game"></table>
+			</div>
+				
+			<div id="console" class="console">
+				<p class="log">This is a test log</p>
 			</div>
 		</div>
-	<link rel="stylesheet" href="style/style.css">
-	<script src="library/jsboard.js"></script>
-	<script src="scripts/data.js"></script>
-	<script src="scripts/scketch.js"></script>
+		<link rel="stylesheet" href="style/style.css">
+		<script src="library/jsboard.js"></script>
+		<script src="scripts/data.js"></script>
+		<script src="scripts/scketch.js"></script>
 	</body>
 </html>
