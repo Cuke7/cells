@@ -4,6 +4,9 @@
 .blue { 
 	background: lightblue !important; 
 }
+.yellow { 
+	background: lighyellow !important; 
+}
 
 .side_menu{
 	border: 3px solid black;
@@ -11,7 +14,8 @@
 	width: 15%;
 	vertical-align: top;
 	display: table-cell;
-	text-align: left;
+	text-align: center;
+	background-color:#000000;
 }
 
 .console{
@@ -39,6 +43,8 @@
 .btn {
 	background:none;
 	border: none;
+	display: none;
+	margin: auto;
 }
 
 .log {

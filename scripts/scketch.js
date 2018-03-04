@@ -8,7 +8,8 @@ let table;
 let b_team=[]
 let r_team=[];
 // variables for piece to move and its locs
-let bindMoveLocs, bindMovePiece, bindMoveCell;
+let bindMoveLocs, bindMovePiece, bindMoveCell, selectedPiece;
+let btn_list;
 
 
 window.onload = function () {init();}
@@ -20,8 +21,7 @@ function init(){
 	board_size="15x30"; b_height=15; b_width=30;
 	b = jsboard.board({attach:"game", size:board_size});
 	table=document.getElementById("game");
-	init_menu();
-
+	btn_list=document.getElementsByClassName("btn");
 
 	b.cell("each").style({width:dim_s, height:dim_s, background:"url('images/basic_tile.png') no-repeat",backgroundSize:"100% 100%"});
 
@@ -48,20 +48,15 @@ function init(){
 
 
 	for (var i=0; i<b_team.length; i++){ 
-		b_team[i].addEventListener("click", function() { showMoves(this); });
+		b_team[i].addEventListener("click", function() {SelectedPiece=this; resetSideMenu(); this.display_menu();});
 	}
 	for (var i=0; i<r_team.length; i++){ 
-		r_team[i].addEventListener("click", function() { showMoves(this); });
+		r_team[i].addEventListener("click", function() { resetSideMenu(); this.display_menu(); SelectedPiece=this;});
 	}
 }
 
-function init_menu(){
-	//document.getElementById("s_menu").style.minHeight="400px";
-	//document.getElementById("console").style.minHeight="400px";
-}
 
 function showMoves(piece) {
-
     resetBoard();
     var newLocs = [];
     var loc;
@@ -82,22 +77,15 @@ function showMoves(piece) {
 		}
 		newLocs=removeIllegalMoves(newLocs);
 	}
-    // bind green spaces to movement of piece
     bindMoveLocs = newLocs.slice();
     bindMovePiece = piece; 
-    bindMoveEvents(bindMoveLocs);
 	
-}
-
-
-// bind move event to new piece locations
-function bindMoveEvents(locs) {
-    for (var i=0; i<locs.length; i++) {
-        b.cell(locs[i]).DOM().classList.add("green");
-        b.cell(locs[i]).on("click", movePiece);  
+	// bind green spaces to movement of piece
+    for (var i=0; i<bindMoveLocs.length; i++) {
+        b.cell(bindMoveLocs[i]).DOM().classList.add("green");
+        b.cell(bindMoveLocs[i]).on("click", movePiece);  
     }
 }
-
 
 // actually move the piece
 function movePiece() {
@@ -108,22 +96,28 @@ function movePiece() {
     }
 }
 
-
 // remove previous green spaces and event listeners
 function resetBoard() {
     for (var r=0; r<b.rows(); r++) {
         for (var c=0; c<b.cols(); c++) {
             b.cell([r,c]).DOM().classList.remove("green");
+			b.cell([r,c]).DOM().classList.remove("blue");
             b.cell([r,c]).removeOn("click", movePiece);
         }
     }
+}
+
+function resetSideMenu(){
+	for(let i=0;i<btn_list.length; i++){
+		btn_list[i].style.display="none";
+	}
 }
 
 // Remove illegals moves
 function removeIllegalMoves(arr) {
         var fixedLocs = [];
         for (var i=0; i<arr.length; i++) 
-            if (b.cell(arr[i]).get()==null && b.cell(arr[i]).get()!=bindMoveCell.get()){
+            if (b.cell(arr[i]).get()==null && b.cell(arr[i]).get()!=b.cell(SelectedPiece.parentNode).get()){
                 fixedLocs.push(arr[i]); 
 			}
         newLocs = fixedLocs;
@@ -132,13 +126,33 @@ function removeIllegalMoves(arr) {
 
 
 
-function showsight(){
-}	
+// function showsight(){
+	// console.log(SelectedPiece);
+	// resetBoard();
+	// var visionLocs = [];
+    // var loc;
+    // loc = b.cell(SelectedPiece.parentNode).where();
+	// bindMoveCell= b.cell(SelectedPiece.parentNode);
+	// visionLocs.push(loc);
+	// let sight=SelectedPiece.spell1.sight;
+	
+	// for(let j=-sight; j<sight; j++){
+		// for(let k=-sight;k<sight; k++){
+			// if(abs(j)+abs(k)<sight){
+				// if(k!=0 || j!=0){
+					// visionLocs.push([loc[0]+j,loc[1]+k]);
+				// }
+			// }
+		// }
+	// }
+	// console.log(visionLocs);
+	// bindVisionEvents(visionLocs); 
+// }
 
 
 
 
-// bind vision event to new piece locations
+//bind vision event to new piece locations
 // function bindVisionEvents(locs) {
     // for (var i=0; i<locs.length; i++) {
         // b.cell(locs[i]).DOM().classList.add("blue");
@@ -197,10 +211,10 @@ function showsight(){
     // bindVisionEvents(visionLocs);
 // }
 
-// function abs(number){
-	// if(number<0)return -number;
-	// return number;
-// }
+function abs(number){
+	if(number<0)return -number;
+	return number;
+}
 
 /* let movedx=X-e.clientX;
 let movedy=X-e.clientY;
